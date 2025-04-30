@@ -192,10 +192,10 @@ class AuraAPIClient:
         
         # Add optional parameters only if they're provided and applicable            
         if graph_analytics_plugin and type in ["professional-db", "enterprise-db", "business-critical"]:
-            payload["graph_analytics_plugin"] = lower(str(graph_analytics_plugin))
+            payload["graph_analytics_plugin"] = str(graph_analytics_plugin).lower()
             
         if vector_optimized and type in ["professional-db", "enterprise-db", "business-critical"]:
-            payload["vector_optimized"] = lower(str(vector_optimized))
+            payload["vector_optimized"] = str(vector_optimized).lower()
             
         if source_instance_id and type in ["professional-db", "enterprise-db", "business-critical"]:
             payload["source_instance_id"] = source_instance_id
@@ -206,7 +206,8 @@ class AuraAPIClient:
     
     def update_instance(self, instance_id: str, name: Optional[str] = None, 
                         memory: Optional[int] = None, 
-                        vector_optimized: Optional[bool] = None) -> Dict[str, Any]:
+                        vector_optimized: Optional[bool] = None, 
+                        storage: Optional[int] = None) -> Dict[str, Any]:
         """Update an existing instance."""
         url = f"{self.BASE_URL}/instances/{instance_id}"
         
@@ -215,8 +216,11 @@ class AuraAPIClient:
             payload["name"] = name
         if memory is not None:
             payload["memory"] = f"{memory}GB"
+            payload["storage"] = f"{2*memory}GB"
+        if storage is not None:
+            payload["storage"] = f"{storage}GB"
         if vector_optimized is not None:
-            payload["vector_optimized"] = lower(str(vector_optimized))
+            payload["vector_optimized"] = str(vector_optimized).lower()
         
         print("Update instance payload:")
         print(payload)
